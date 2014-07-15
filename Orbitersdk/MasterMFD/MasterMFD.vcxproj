@@ -76,6 +76,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="globals.h" />
     <ClInclude Include="MasterMFD.h" />
     <ClInclude Include="PersistData.h" />
   </ItemGroup>

@@ -77,9 +77,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="MasterMFD.h" />
+    <ClInclude Include="PersistData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MasterMFD.cpp" />
+    <ClCompile Include="PersistData.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

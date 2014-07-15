@@ -18,9 +18,15 @@
     <ClInclude Include="MasterMFD.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PersistData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MasterMFD.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PersistData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

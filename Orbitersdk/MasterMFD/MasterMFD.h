@@ -9,7 +9,7 @@ public:
 	MasterMFD(int _mfdNumber, DWORD w, DWORD h, VESSEL *vessel);
 	//char *ButtonLabel(int bt);
 	//int  ButtonMenu(const MFDBUTTONMENU **menu) const;
-	//void Update(oapi::Sketchpad* skp);
+	bool Update(oapi::Sketchpad* skp);
 	static int MsgProc(UINT msg, UINT mfd, WPARAM wparam, LPARAM lparam);
 private:
 	void drawTextNextToButton(int buttonNum, std::string text, oapi::Sketchpad* skp);

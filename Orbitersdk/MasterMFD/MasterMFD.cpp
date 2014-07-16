@@ -33,6 +33,18 @@ DLLCLBK void ExitModule(HINSTANCE hDLL)
 	oapiUnregisterMFDMode(mfdIdentifierMode);
 }
 
+DLLCLBK void opcPreStep(double simt, double simdt, double mjd)
+{
+	if (PersistantData::switchMFD)
+	{
+		//switch it!
+		oapiOpenMFD(PersistantData::mfdMode, PersistantData::mfdNum);
+		//rest switchMFD
+		PersistantData::switchMFD = false;
+	}
+
+}
+
 MasterMFD::MasterMFD(int _mfdNumber, DWORD w, DWORD h, VESSEL *vessel)
 : MFD2(w, h, vessel), width(w), height(h), mfdNumber(_mfdNumber)
 {
@@ -58,8 +70,10 @@ bool MasterMFD::ConsumeButton(int bt, int event)
 	}
 	if (bt >= currentContainer->children.size() && bt < currentContainer->children.size() + currentContainer->MFDS.size())
 	{
-		//switch to that MFD
-		oapiOpenMFD(currentContainer->MFDS[bt - currentContainer->children.size()].mfdID, mfdNumber);
+		//schedule a MFD switch at next frame
+		PersistantData::mfdMode = currentContainer->MFDS[bt - currentContainer->children.size()].mfdID;
+		PersistantData::mfdNum = mfdNumber;
+		PersistantData::switchMFD = true;
 		return true;
 	}
 	return false;

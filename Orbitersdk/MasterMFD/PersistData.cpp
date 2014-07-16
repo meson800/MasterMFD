@@ -147,6 +147,8 @@ void PersistantData::readyContainer()
 {
 	if (!containerReady)
 	{
+		//set top container's parent so we can distiguish it later
+		topContainer.parent = NULL;
 
 		//return if we don't have any lines
 		if (lines.size() == 0)

@@ -2,10 +2,13 @@
 
 bool PersistantData::containerReady = false;
 std::vector<LineData> PersistantData::lines;
+MFDContainer PersistantData::topContainer;
 
 lineIterator MFDContainer::fill(lineIterator currentLine, int whitespaceLevel)
 {
-	//this works recursively
+	//return if we got a bad current line
+	if (currentLine == PersistantData::lines.end())
+		return currentLine;
 
 	//return when we go above our whitespace level (less whitespace)
 	while (currentLine->numWhitespace >= whitespaceLevel)
@@ -13,12 +16,18 @@ lineIterator MFDContainer::fill(lineIterator currentLine, int whitespaceLevel)
 		//Check the next two lines's whitespace level.
 		int currentLevel, nextLevel;
 		currentLevel = currentLine->numWhitespace;
-		nextLevel = (currentLine + 1)->numWhitespace;
 
-		//if both are at the same whitespace level, current line is an MFD.
-		if (currentLevel == whitespaceLevel && nextLevel == whitespaceLevel)
+		//prevent this from exploding
+		if (currentLine + 1 != PersistantData::lines.end())
+			nextLevel = (currentLine + 1)->numWhitespace;
+		else
+			nextLevel = 0;
+
+		//if both are at the same whitespace level, or next level is less current line is an MFD.
+		if (currentLevel == whitespaceLevel && nextLevel <= whitespaceLevel)
 		{
 			MFDS.push_back(MFDData(currentLine->name));
+			++currentLine;
 		}
 
 		//if  the next level is greater than this level, then it's another container
@@ -28,13 +37,14 @@ lineIterator MFDContainer::fill(lineIterator currentLine, int whitespaceLevel)
 			children.back()->parent = this;
 			children.back()->name = currentLine->name;
 			currentLine = children.back()->fill(currentLine + 1, nextLevel);
-			//continue so we refresh our current line
-			continue;
 		}
+		//return if we got a bad current line
+		if (currentLine == PersistantData::lines.end())
+			return currentLine;
 	}
 
 	//we're done!  return the next line
-	return currentLine + 1;
+	return currentLine;
 }
 
 //returns true if this container is empty
@@ -45,7 +55,7 @@ bool MFDContainer::checkContainer()
 	while (it != children.end())
 	{
 		
-		if ((*it)->checkContainer())
+		if (!(*it)->checkContainer())
 		{
 			//it's empty, delete it
 			delete (*it);
@@ -92,7 +102,7 @@ bool PersistantData::fillLineData(std::string treeFilename)
 	//open ifstream to file
 	std::string filename = "Config/MasterMFD/" + treeFilename;
 	std::ifstream treeFile;
-	treeFile.open(treeFilename.c_str());
+	treeFile.open(filename.c_str());
 	if (treeFile.is_open() != true)
 		return false;
 
@@ -129,6 +139,7 @@ bool PersistantData::fillLineData(std::string treeFilename)
 		if (name.size() > 0)
 			lines.push_back(LineData(whitespaceCount, name));
 	}
+	return true;
 }
 
 //ONLY CALL THIS WHEN WE ARE ALLOWED TO-AFTER INITIAL LOAD, DURING SIMULATION
@@ -138,7 +149,7 @@ void PersistantData::readyContainer()
 	{
 
 		//return if we don't have any lines
-		if (lines.size == 0)
+		if (lines.size() == 0)
 		{
 			oapiWriteLog("MasterMFD: No lines read.");
 			return;

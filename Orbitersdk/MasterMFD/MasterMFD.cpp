@@ -1,6 +1,7 @@
 #define STRICT
 #define ORBITER_MODULE
 #include "Orbitersdk.h"
+#include "PersistData.h"
 #include "MasterMFD.h"
 
 int mfdIdentifierMode;
@@ -15,6 +16,16 @@ DLLCLBK void InitModule(HINSTANCE hDLL)
 	spec.msgproc = MasterMFD::MsgProc;
 
 	mfdIdentifierMode = oapiRegisterMFDMode(spec);
+
+	//load lines
+	PersistantData::fillLineData("testTree.txt");
+
+}
+
+DLLCLBK void opcOpenRenderViewport(HWND hRenderWnd, DWORD width, DWORD height, BOOL fullscreen)
+{
+	//ready container
+	PersistantData::readyContainer();
 }
 
 DLLCLBK void ExitModule(HINSTANCE hDLL)

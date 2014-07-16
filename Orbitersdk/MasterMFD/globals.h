@@ -1,4 +1,4 @@
 #include <vector>
-class LineData;
+struct LineData;
 
 typedef std::vector<LineData>::iterator lineIterator;

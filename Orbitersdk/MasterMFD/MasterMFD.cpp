@@ -61,22 +61,29 @@ bool MasterMFD::ConsumeButton(int bt, int event)
 {
 	if (!(event & PANEL_MOUSE_LBDOWN)) return false;
 
-	//check if this button is an sub-category or a MFD
-	if (bt < currentContainer->children.size())
+	switch (buttons[bt].buttonType)
 	{
-		//go into a subcategory
-		currentContainer = currentContainer->children[bt];
-		return true;
+		case ButtonType::CAT:
+		{
+			//go into a subcategory
+			currentContainer = currentContainer->children[buttons[bt].id];
+			//update location
+			generateTreeLocation();
+			return true;
+			break;
+		}
+	case ButtonType::MFD:
+		{
+			//schedule a MFD switch at next frame
+			PersistantData::mfdMode = currentContainer->MFDS[buttons[bt].id].mfdID;
+			PersistantData::mfdNum = mfdNumber;
+			PersistantData::switchMFD = true;
+			return true;
+			break;
+		}
+	default:
+		return false;
 	}
-	if (bt >= currentContainer->children.size() && bt < currentContainer->children.size() + currentContainer->MFDS.size())
-	{
-		//schedule a MFD switch at next frame
-		PersistantData::mfdMode = currentContainer->MFDS[bt - currentContainer->children.size()].mfdID;
-		PersistantData::mfdNum = mfdNumber;
-		PersistantData::switchMFD = true;
-		return true;
-	}
-	return false;
 }
 
 bool MasterMFD::Update(oapi::Sketchpad* skp)

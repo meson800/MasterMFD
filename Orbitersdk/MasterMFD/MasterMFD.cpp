@@ -98,6 +98,7 @@ bool MasterMFD::ConsumeButton(int bt, int event)
 	default:
 		return false;
 	}
+	return false;
 }
 
 bool MasterMFD::Update(oapi::Sketchpad* skp)
@@ -152,7 +153,7 @@ void MasterMFD::drawCategories(oapi::Sketchpad* skp)
 	skp->SetTextColor(GetDefaultColour(0));
 
 	//draw the current categories in green
-	for (int i = 0; i < currentContainer->children.size(); i++)
+	for (unsigned int i = 0; i < currentContainer->children.size(); i++)
 	{
 		drawTextAtNextButton(currentContainer->children[i]->name, ButtonData(ButtonType::CAT, i), skp);
 	}
@@ -165,7 +166,7 @@ void MasterMFD::drawMFDS(oapi::Sketchpad* skp)
 	skp->SetTextColor(GetDefaultColour(1));
 
 	//draw the current categories in green
-	for (int i = 0; i < currentContainer->MFDS.size(); i++)
+	for (unsigned int i = 0; i < currentContainer->MFDS.size(); i++)
 	{
 		drawTextAtNextButton(currentContainer->MFDS[i].name, ButtonData(ButtonType::MFD,i), skp);
 	}
@@ -198,7 +199,7 @@ void MasterMFD::drawTextNextToButton(int buttonNum, std::string text, oapi::Sket
 
 void MasterMFD::drawAtLinePercentage(int xLoc, double percentY, std::string text, oapi::Sketchpad* skp)
 {
-	skp->Text(xLoc, percentY * height, text.c_str(), text.size()); 
+	skp->Text(xLoc, (int)(percentY * height), text.c_str(), text.size()); 
 }
 
 // message parser

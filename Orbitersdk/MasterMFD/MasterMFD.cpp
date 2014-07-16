@@ -68,7 +68,7 @@ bool MasterMFD::ConsumeButton(int bt, int event)
 			//switch the ID
 			switch (buttons[bt].id)
 			{
-			case 0:
+			case NavType::BACK:
 				//it's the back button, advance up the tree
 				currentContainer = currentContainer->parent;
 				generateTreeLocation();
@@ -143,7 +143,7 @@ void MasterMFD::drawNavigation(oapi::Sketchpad* skp)
 
 	//if we aren't at the top, draw a "back" button to advance up a category
 	if (!areAtTop())
-		drawTextAtNextButton("Back", ButtonData(ButtonType::NAV, 0), skp);
+		drawTextAtNextButton("Back", ButtonData(ButtonType::NAV, NavType::BACK), skp);
 }
 
 void MasterMFD::drawCategories(oapi::Sketchpad* skp)

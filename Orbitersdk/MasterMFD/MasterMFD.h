@@ -10,6 +10,11 @@ enum ButtonType
 	NAV,CAT,MFD
 };
 
+enum NavType
+{
+	BACK = 0
+};
+
 struct ButtonData
 {
 	ButtonData(ButtonType _type, int _id) : buttonType(_type), id(_id) {}

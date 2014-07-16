@@ -40,5 +40,7 @@ public:
 	static std::vector<LineData> lines;
 	static MFDContainer topContainer;
 	static bool containerReady;
+	static bool switchMFD;
+	static int mfdNum, mfdID;
 
 };

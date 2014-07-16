@@ -99,7 +99,8 @@ void MasterMFD::drawNavigation(oapi::Sketchpad* skp)
 	Title(skp, "MasterMFD");
 
 	//draw current location in the tree
-	skp->SetPen(GetDefaultPen(2));
+	skp->SetFont(GetDefaultFont(0));
+	skp->SetTextColor(GetDefaultColour(2));
 	//justify text in the center
 	int xCoord = (width - skp->GetTextWidth(treeLocation.c_str())) / 2;
 	drawAtLinePercentage(xCoord, .05, treeLocation.c_str(), skp);
@@ -108,7 +109,7 @@ void MasterMFD::drawNavigation(oapi::Sketchpad* skp)
 void MasterMFD::drawCategories(oapi::Sketchpad* skp)
 {
 	skp->SetFont(GetDefaultFont(0));
-	skp->SetPen(GetDefaultPen(0));
+	skp->SetTextColor(GetDefaultColour(0));
 
 	//draw the current categories in green
 	for (int i = 0; i < currentContainer->children.size(); i++)
@@ -121,7 +122,7 @@ void MasterMFD::drawMFDS(oapi::Sketchpad* skp)
 {
 
 	skp->SetFont(GetDefaultFont(0));
-	skp->SetPen(GetDefaultPen(1));
+	skp->SetTextColor(GetDefaultColour(1));
 
 	//draw the current categories in green
 	for (int i = 0; i < currentContainer->MFDS.size(); i++)

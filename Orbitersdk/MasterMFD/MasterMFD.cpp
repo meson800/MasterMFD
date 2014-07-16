@@ -34,9 +34,26 @@ DLLCLBK void ExitModule(HINSTANCE hDLL)
 }
 
 MasterMFD::MasterMFD(int _mfdNumber, DWORD w, DWORD h, VESSEL *vessel)
-: MFD2(w, h, vessel)
+: MFD2(w, h, vessel), width(w), height(h), mfdNumber(_mfdNumber)
 {
-	mfdNumber = _mfdNumber;
+	//start with default container
+	currentContainer = &(PersistantData::topContainer);
+}
+
+void MasterMFD::drawTextNextToButton(int buttonNum, std::string text, oapi::Sketchpad* skp)
+{
+	double percentY = .15 * (buttonNum % 5);
+	//if buttonNum is less than 5 (on the left side), just draw normally
+	//otherwise, draw out from the right
+	if (buttonNum < 5)
+		drawAtLinePercentage(3, percentY, text, skp); //3 pixels out for spacing
+	else
+		drawAtLinePercentage(width - skp->GetTextWidth(text.c_str()) - 3, percentY, text, skp);
+}
+
+void MasterMFD::drawAtLinePercentage(int xLoc, double percentY, std::string text, oapi::Sketchpad* skp)
+{
+	skp->Text(xLoc, percentY * height, text.c_str(), text.size()); 
 }
 
 // message parser

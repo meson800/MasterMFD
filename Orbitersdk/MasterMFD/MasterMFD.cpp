@@ -18,7 +18,7 @@ DLLCLBK void InitModule(HINSTANCE hDLL)
 	mfdIdentifierMode = oapiRegisterMFDMode(spec);
 
 	//load lines
-	PersistantData::fillLineData("testTree.txt");
+	PersistantData::fillLineData("mainTree.txt");
 
 }
 

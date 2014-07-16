@@ -2,7 +2,7 @@
 
 bool PersistantData::switchMFD = false;
 int PersistantData::mfdNum = 0;
-int PersistantData::mfdID = 0;
+int PersistantData::mfdMode = 0;
 bool PersistantData::containerReady = false;
 std::vector<LineData> PersistantData::lines;
 MFDContainer PersistantData::topContainer;

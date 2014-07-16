@@ -41,6 +41,6 @@ public:
 	static MFDContainer topContainer;
 	static bool containerReady;
 	static bool switchMFD;
-	static int mfdNum, mfdID;
+	static int mfdNum, mfdMode;
 
 };

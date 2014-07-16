@@ -67,23 +67,11 @@ bool MasterMFD::ConsumeButton(int bt, int event)
 
 bool MasterMFD::Update(oapi::Sketchpad* skp)
 {
-	skp->SetPen(GetDefaultPen(0));
-	skp->SetFont(GetDefaultFont(0));
-
-	int currentButton = 0;
-	//draw the current categories in green
-	for (int i = 0; i < currentContainer->children.size(); i++)
-	{
-		drawTextNextToButton(currentButton, currentContainer->children[i]->name, skp);
-		currentButton++;
-	}
-	//draw the current MFD's in yellow
-	skp->SetPen(GetDefaultPen(1));
-	for (int j = 0; j < currentContainer->MFDS.size(); j++)
-	{
-		drawTextNextToButton(currentButton, currentContainer->MFDS[j].name, skp);
-		currentButton++;
-	}
+	resetNextButton();
+	generateTreeLocation();
+	drawNavigation(skp);
+	drawCategories(skp);
+	drawMFDS(skp);
 
 	return true;
 }
@@ -95,12 +83,14 @@ void MasterMFD::generateTreeLocation()
 	if (currentContainer->parent != NULL)
 		treeLocation = currentContainer->name;
 	//go up through parents, appending name
-	MFDContainer* navigationContainer = currentContainer->parent;
-	while (navigationContainer->parent != NULL)
+	MFDContainer* navigationContainer = currentContainer;
+	while (navigationContainer->parent != NULL )
 	{
-		//write out this one's name, with an arrow
-		treeLocation.insert(0, navigationContainer->name + "->");
 		navigationContainer = navigationContainer->parent;
+		//write out this one's name, with an arrow
+		if ((navigationContainer->name.compare("")))
+			treeLocation.insert(0, navigationContainer->name + "->");
+		
 	}
 }
 
@@ -117,8 +107,8 @@ void MasterMFD::drawNavigation(oapi::Sketchpad* skp)
 
 void MasterMFD::drawCategories(oapi::Sketchpad* skp)
 {
-	skp->SetPen(GetDefaultPen(0));
 	skp->SetFont(GetDefaultFont(0));
+	skp->SetPen(GetDefaultPen(0));
 
 	//draw the current categories in green
 	for (int i = 0; i < currentContainer->children.size(); i++)
@@ -129,8 +119,9 @@ void MasterMFD::drawCategories(oapi::Sketchpad* skp)
 
 void MasterMFD::drawMFDS(oapi::Sketchpad* skp)
 {
-	skp->SetPen(GetDefaultPen(1));
+
 	skp->SetFont(GetDefaultFont(0));
+	skp->SetPen(GetDefaultPen(1));
 
 	//draw the current categories in green
 	for (int i = 0; i < currentContainer->MFDS.size(); i++)

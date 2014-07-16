@@ -128,7 +128,7 @@ void MasterMFD::drawCategories(oapi::Sketchpad* skp)
 	//draw the current categories in green
 	for (int i = 0; i < currentContainer->children.size(); i++)
 	{
-		drawTextAtNextButton(currentContainer->children[i]->name, skp);
+		drawTextAtNextButton(currentContainer->children[i]->name, ButtonData(ButtonType::CAT, i), skp);
 	}
 }
 
@@ -141,12 +141,13 @@ void MasterMFD::drawMFDS(oapi::Sketchpad* skp)
 	//draw the current categories in green
 	for (int i = 0; i < currentContainer->MFDS.size(); i++)
 	{
-		drawTextAtNextButton(currentContainer->MFDS[i].name, skp);
+		drawTextAtNextButton(currentContainer->MFDS[i].name, ButtonData(ButtonType::MFD,i), skp);
 	}
 }
 
-void MasterMFD::drawTextAtNextButton(std::string text, oapi::Sketchpad* skp)
+void MasterMFD::drawTextAtNextButton(std::string text, ButtonData info, oapi::Sketchpad* skp)
 {
+	buttons.push_back(info);
 	if (nextButton < 12)
 		drawTextNextToButton(nextButton, text, skp);
 	nextButton++;
@@ -154,6 +155,7 @@ void MasterMFD::drawTextAtNextButton(std::string text, oapi::Sketchpad* skp)
 
 void MasterMFD::resetNextButton()
 {
+	buttons.clear();
 	nextButton = 0;
 }
 

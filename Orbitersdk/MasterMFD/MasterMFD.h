@@ -1,7 +1,21 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include "PersistData.h"
+
+
+enum ButtonType
+{
+	NAV,CAT,MFD
+};
+
+struct ButtonData
+{
+	ButtonData(ButtonType _type, int _id) : buttonType(_type), id(_id) {}
+	ButtonType buttonType;
+	int id;
+};
 
 class MasterMFD : public MFD2
 {
@@ -19,12 +33,14 @@ private:
 
 	void generateTreeLocation();
 
-	void drawTextAtNextButton(std::string text, oapi::Sketchpad* skp);
+	void drawTextAtNextButton(std::string text, ButtonData info, oapi::Sketchpad* skp);
 	void resetNextButton();
 	void drawTextNextToButton(int buttonNum, std::string text, oapi::Sketchpad* skp);
 	void drawAtLinePercentage(int xLoc, double percentY, std::string text, oapi::Sketchpad* skp);
 
 	bool areAtTop();
+
+	std::vector<ButtonData> buttons;
 
 	std::string treeLocation;
 	DWORD width, height;

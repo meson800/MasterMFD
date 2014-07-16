@@ -71,7 +71,7 @@ bool MFDContainer::checkContainer()
 		else
 		{
 			//log it
-			oapiWriteLog((char*)(std::string("Couldn't find MFD named:" + MFDit->name).c_str()));
+			oapiWriteLog((char*)(std::string("MasterMFD: Couldn't find MFD named-" + MFDit->name).c_str()));
 
 			//delete it
 			MFDit = MFDS.erase(MFDit);
@@ -134,5 +134,23 @@ bool PersistantData::fillLineData(std::string treeFilename)
 //ONLY CALL THIS WHEN WE ARE ALLOWED TO-AFTER INITIAL LOAD, DURING SIMULATION
 void PersistantData::readyContainer()
 {
-	//
+	if (!containerReady)
+	{
+
+		//return if we don't have any lines
+		if (lines.size == 0)
+		{
+			oapiWriteLog("MasterMFD: No lines read.");
+			return;
+		}
+		//fill everything
+		lineIterator lineIt = lines.begin();
+		topContainer.fill(lineIt, lines[0].numWhitespace);
+
+		//ready the upper-level container!
+		if (topContainer.checkContainer())
+		{
+			containerReady = true;
+		}
+	}
 }

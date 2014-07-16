@@ -37,6 +37,54 @@ lineIterator MFDContainer::fill(lineIterator currentLine, int whitespaceLevel)
 	return currentLine + 1;
 }
 
+//returns true if this container is empty
+bool MFDContainer::checkContainer()
+{
+	//first, recurse into children, removing them if they are empty
+	std::vector<MFDContainer*>::iterator it = children.begin();
+	while (it != children.end())
+	{
+		
+		if ((*it)->checkContainer())
+		{
+			//it's empty, delete it
+			delete (*it);
+			//remove element and cleanup
+			it = children.erase(it);
+		}
+		else
+			it++;
+	}
+
+	//now check our MFD's, and fill them if they exist
+	std::vector<MFDData>::iterator MFDit = MFDS.begin();
+	while (MFDit != MFDS.end())
+	{
+		int mfdID = oapiGetMFDModeSpecEx((char*)(MFDit->name.c_str()));
+		//check if we have a legit MFD
+		if (mfdID != MFD_NONE)
+		{
+			MFDit->mfdID = mfdID;
+			MFDit++;
+		}
+		//otherwise, delete it!
+		else
+		{
+			//log it
+			oapiWriteLog((char*)(std::string("Couldn't find MFD named:" + MFDit->name).c_str()));
+
+			//delete it
+			MFDit = MFDS.erase(MFDit);
+		}
+	}
+
+	//now, return true if we have either an MFD or a subcategory
+	if (children.size() > 0 || MFDS.size() > 0)
+		return true;
+	else
+		return false;
+}
+
 //Reads each line, and counts whitespace characters in it to fill lines
 //Filename is from ORBITER_ROOT/Config/MasterMFD/
 bool PersistantData::fillLineData(std::string treeFilename)
@@ -81,4 +129,10 @@ bool PersistantData::fillLineData(std::string treeFilename)
 		if (name.size() > 0)
 			lines.push_back(LineData(whitespaceCount, name));
 	}
+}
+
+//ONLY CALL THIS WHEN WE ARE ALLOWED TO-AFTER INITIAL LOAD, DURING SIMULATION
+void PersistantData::readyContainer()
+{
+	//
 }

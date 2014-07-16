@@ -22,6 +22,7 @@ struct MFDData
 struct MFDContainer
 {
 	lineIterator fill(lineIterator currentLine, int whitespaceLevel);
+	bool checkContainer();
 
 	std::string name;
 	MFDContainer * parent;
@@ -33,7 +34,7 @@ class PersistantData
 {
 public:
 	static bool fillLineData(std::string treeFilename);
-
+	static void readyContainer();
 	static std::vector<LineData> lines;
 	static MFDContainer topContainer;
 	static bool containerReady;

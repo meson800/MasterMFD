@@ -83,6 +83,45 @@ bool MasterMFD::Update(oapi::Sketchpad* skp)
 	return true;
 }
 
+//regenerate tree location
+void MasterMFD::generateTreeLocation()
+{
+	//start with current subcategory name
+	if (currentContainer->parent != NULL)
+		treeLocation = currentContainer->name;
+	//go up through parents, appending name
+	MFDContainer* navigationContainer = currentContainer->parent;
+	while (navigationContainer->parent != NULL)
+	{
+		//write out this one's name, with an arrow
+		treeLocation.insert(0, navigationContainer->name + "->");
+		navigationContainer = navigationContainer->parent;
+	}
+}
+
+void MasterMFD::drawNavigation(oapi::Sketchpad* skp)
+{
+	Title(skp, "MasterMFD");
+
+	//draw current location in the tree
+	skp->SetPen(GetDefaultPen(2));
+	//justify text in the center
+	int xCoord = (width - skp->GetTextWidth(treeLocation.c_str())) / 2;
+	drawAtLinePercentage(xCoord, .05, treeLocation.c_str(), skp);
+}
+
+void MasterMFD::drawTextAtNextButton(std::string text, oapi::Sketchpad* skp)
+{
+	if (nextButton < 12)
+		drawTextNextToButton(nextButton, text, skp);
+	nextButton++;
+}
+
+void MasterMFD::resetNextButton()
+{
+	nextButton = 0;
+}
+
 void MasterMFD::drawTextNextToButton(int buttonNum, std::string text, oapi::Sketchpad* skp)
 {
 	double percentY = .143 * (buttonNum % 6) + .14;

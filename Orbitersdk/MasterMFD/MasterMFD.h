@@ -13,9 +13,18 @@ public:
 	bool Update(oapi::Sketchpad* skp);
 	static int MsgProc(UINT msg, UINT mfd, WPARAM wparam, LPARAM lparam);
 private:
+	void drawNavigation(oapi::Sketchpad* skp);
+
+	void generateTreeLocation();
+
+	void drawTextAtNextButton(std::string text, oapi::Sketchpad* skp);
+	void resetNextButton();
 	void drawTextNextToButton(int buttonNum, std::string text, oapi::Sketchpad* skp);
 	void drawAtLinePercentage(int xLoc, double percentY, std::string text, oapi::Sketchpad* skp);
+
+	std::string treeLocation;
 	DWORD width, height;
 	MFDContainer* currentContainer;
 	int mfdNumber;
+	int nextButton;
 };

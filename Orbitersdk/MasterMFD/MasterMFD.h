@@ -14,6 +14,8 @@ public:
 	static int MsgProc(UINT msg, UINT mfd, WPARAM wparam, LPARAM lparam);
 private:
 	void drawNavigation(oapi::Sketchpad* skp);
+	void drawCategories(oapi::Sketchpad* skp);
+	void drawMFDS(oapi::Sketchpad* skp);
 
 	void generateTreeLocation();
 
@@ -21,6 +23,8 @@ private:
 	void resetNextButton();
 	void drawTextNextToButton(int buttonNum, std::string text, oapi::Sketchpad* skp);
 	void drawAtLinePercentage(int xLoc, double percentY, std::string text, oapi::Sketchpad* skp);
+
+	bool areAtTop();
 
 	std::string treeLocation;
 	DWORD width, height;

@@ -40,6 +40,11 @@ MasterMFD::MasterMFD(int _mfdNumber, DWORD w, DWORD h, VESSEL *vessel)
 	currentContainer = &(PersistantData::topContainer);
 }
 
+bool MasterMFD::areAtTop()
+{
+	return !(currentContainer->parent);
+}
+
 bool MasterMFD::ConsumeButton(int bt, int event)
 {
 	if (!(event & PANEL_MOUSE_LBDOWN)) return false;
@@ -108,6 +113,30 @@ void MasterMFD::drawNavigation(oapi::Sketchpad* skp)
 	//justify text in the center
 	int xCoord = (width - skp->GetTextWidth(treeLocation.c_str())) / 2;
 	drawAtLinePercentage(xCoord, .05, treeLocation.c_str(), skp);
+}
+
+void MasterMFD::drawCategories(oapi::Sketchpad* skp)
+{
+	skp->SetPen(GetDefaultPen(0));
+	skp->SetFont(GetDefaultFont(0));
+
+	//draw the current categories in green
+	for (int i = 0; i < currentContainer->children.size(); i++)
+	{
+		drawTextAtNextButton(currentContainer->children[i]->name, skp);
+	}
+}
+
+void MasterMFD::drawMFDS(oapi::Sketchpad* skp)
+{
+	skp->SetPen(GetDefaultPen(1));
+	skp->SetFont(GetDefaultFont(0));
+
+	//draw the current categories in green
+	for (int i = 0; i < currentContainer->MFDS.size(); i++)
+	{
+		drawTextAtNextButton(currentContainer->MFDS[i].name, skp);
+	}
 }
 
 void MasterMFD::drawTextAtNextButton(std::string text, oapi::Sketchpad* skp)

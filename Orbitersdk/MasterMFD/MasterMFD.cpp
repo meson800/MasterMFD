@@ -63,6 +63,20 @@ bool MasterMFD::ConsumeButton(int bt, int event)
 
 	switch (buttons[bt].buttonType)
 	{
+		case ButtonType::NAV:
+		{
+			//switch the ID
+			switch (buttons[bt].id)
+			{
+			case 0:
+				//it's the back button, advance up the tree
+				currentContainer = currentContainer->parent;
+				generateTreeLocation();
+				return true;
+				break;
+			}
+			break;
+		}
 		case ButtonType::CAT:
 		{
 			//go into a subcategory
@@ -100,6 +114,7 @@ bool MasterMFD::Update(oapi::Sketchpad* skp)
 //regenerate tree location
 void MasterMFD::generateTreeLocation()
 {
+	treeLocation = "";
 	//start with current subcategory name
 	if (currentContainer->parent != NULL)
 		treeLocation = currentContainer->name;
@@ -125,6 +140,10 @@ void MasterMFD::drawNavigation(oapi::Sketchpad* skp)
 	//justify text in the center
 	int xCoord = (width - skp->GetTextWidth(treeLocation.c_str())) / 2;
 	drawAtLinePercentage(xCoord, .05, treeLocation.c_str(), skp);
+
+	//if we aren't at the top, draw a "back" button to advance up a category
+	if (!areAtTop())
+		drawTextAtNextButton("Back", ButtonData(ButtonType::NAV, 0), skp);
 }
 
 void MasterMFD::drawCategories(oapi::Sketchpad* skp)

@@ -40,22 +40,45 @@ MasterMFD::MasterMFD(int _mfdNumber, DWORD w, DWORD h, VESSEL *vessel)
 	currentContainer = &(PersistantData::topContainer);
 }
 
+bool MasterMFD::ConsumeButton(int bt, int event)
+{
+	if (!(event & PANEL_MOUSE_LBDOWN)) return false;
+
+	//check if this button is an sub-category or a MFD
+	if (bt < currentContainer->children.size())
+	{
+		//go into a subcategory
+		currentContainer = currentContainer->children[bt];
+		return true;
+	}
+	if (bt >= currentContainer->children.size() && bt < currentContainer->children.size() + currentContainer->MFDS.size())
+	{
+		//switch to that MFD
+		oapiOpenMFD(currentContainer->MFDS[bt - currentContainer->children.size()].mfdID, mfdNumber);
+		return true;
+	}
+	return false;
+}
+
 bool MasterMFD::Update(oapi::Sketchpad* skp)
 {
 	skp->SetPen(GetDefaultPen(0));
 	skp->SetFont(GetDefaultFont(0));
-	drawTextNextToButton(0, "test test 0", skp);
-	drawTextNextToButton(1, "test test 1", skp);
-	drawTextNextToButton(2, "test test 2", skp);
-	drawTextNextToButton(3, "test test 3", skp);
-	drawTextNextToButton(4, "test test 4", skp);
-	drawTextNextToButton(5, "test test 5", skp);
-	drawTextNextToButton(6, "test test 6", skp);
-	drawTextNextToButton(7, "test test 7", skp);
-	drawTextNextToButton(8, "test test 8", skp);
-	drawTextNextToButton(9, "test test 9", skp);
-	drawTextNextToButton(10, "test test 10", skp);
-	drawTextNextToButton(11, "test test 11", skp);
+
+	int currentButton = 0;
+	//draw the current categories in green
+	for (int i = 0; i < currentContainer->children.size(); i++)
+	{
+		drawTextNextToButton(currentButton, currentContainer->children[i]->name, skp);
+		currentButton++;
+	}
+	//draw the current MFD's in yellow
+	skp->SetPen(GetDefaultPen(1));
+	for (int j = 0; j < currentContainer->MFDS.size(); j++)
+	{
+		drawTextNextToButton(currentButton, currentContainer->MFDS[j].name, skp);
+		currentButton++;
+	}
 
 	return true;
 }

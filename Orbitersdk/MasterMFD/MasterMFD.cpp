@@ -103,6 +103,11 @@ bool MasterMFD::ConsumeButton(int bt, int event)
 
 bool MasterMFD::Update(oapi::Sketchpad* skp)
 {
+	//update if we haven't before (page will be 0)
+	if (pages == 0)
+	{
+		generateTreeLocation();
+	}
 	resetNextButton();
 	drawNavigation(skp);
 	drawCategories(skp);
@@ -154,12 +159,11 @@ void MasterMFD::drawNavigation(oapi::Sketchpad* skp)
 	//draw tree location
 	//justify text in the center
 
-	drawAtLinePercentage(xCoord, .05, treeLocation.c_str(), skp);
+	drawCenteredAtLinePercentage( .05, treeLocation.c_str(), skp);
 
 	//draw page identifier
 	std::string pageString = "Page " + std::to_string(currentPage) + " of " + std::to_string(pages);
-	xCoord = (width - skp->GetTextWidth(pageString.c_str())) / 2;
-	drawAtLinePercentage(xCoord, .95, pageString.c_str(), skp);
+	drawCenteredAtLinePercentage(.95, pageString.c_str(), skp);
 
 
 	//if we aren't at the top, draw a "back" button to advance up a category

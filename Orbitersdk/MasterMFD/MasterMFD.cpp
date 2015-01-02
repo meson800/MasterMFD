@@ -68,7 +68,7 @@ bool MasterMFD::ConsumeButton(int bt, int event)
 			//switch the ID
 			switch (buttons[bt].id)
 			{
-			case NavType::BACK:
+			case NavType::UP:
 				//it's the back button, advance up the tree
 				currentContainer = currentContainer->parent;
 				generateTreeLocation();
@@ -104,7 +104,6 @@ bool MasterMFD::ConsumeButton(int bt, int event)
 bool MasterMFD::Update(oapi::Sketchpad* skp)
 {
 	resetNextButton();
-	generateTreeLocation();
 	drawNavigation(skp);
 	drawCategories(skp);
 	drawMFDS(skp);
@@ -127,8 +126,21 @@ void MasterMFD::generateTreeLocation()
 		//write out this one's name, with an arrow
 		if ((navigationContainer->name.compare("")))
 			treeLocation.insert(0, navigationContainer->name + "->");
-		
 	}
+
+	//set pages correctly
+	currentPage = 1;
+	pages = calculatePages();
+}
+
+int MasterMFD::calculatePages()
+{
+	int numItems = currentContainer->children.size() + currentContainer->MFDS.size();
+	//if we have up to 11 items, then we have one page
+	if (numItems <= 11)
+		return 1;
+	//if we have more, then we can only fit 9 items per page (we need two buttons for previous/next page)
+	return ceil((float)numItems / 9.0);
 }
 
 void MasterMFD::drawNavigation(oapi::Sketchpad* skp)
@@ -138,13 +150,21 @@ void MasterMFD::drawNavigation(oapi::Sketchpad* skp)
 	//draw current location in the tree
 	skp->SetFont(GetDefaultFont(0));
 	skp->SetTextColor(GetDefaultColour(2));
+
+	//draw tree location
 	//justify text in the center
-	int xCoord = (width - skp->GetTextWidth(treeLocation.c_str())) / 2;
+
 	drawAtLinePercentage(xCoord, .05, treeLocation.c_str(), skp);
+
+	//draw page identifier
+	std::string pageString = "Page " + std::to_string(currentPage) + " of " + std::to_string(pages);
+	xCoord = (width - skp->GetTextWidth(pageString.c_str())) / 2;
+	drawAtLinePercentage(xCoord, .95, pageString.c_str(), skp);
+
 
 	//if we aren't at the top, draw a "back" button to advance up a category
 	if (!areAtTop())
-		drawTextAtNextButton("Back", ButtonData(ButtonType::NAV, NavType::BACK), skp);
+		drawTextAtNextButton("Up a level", ButtonData(ButtonType::NAV, NavType::UP), skp);
 }
 
 void MasterMFD::drawCategories(oapi::Sketchpad* skp)
@@ -200,6 +220,13 @@ void MasterMFD::drawTextNextToButton(int buttonNum, std::string text, oapi::Sket
 void MasterMFD::drawAtLinePercentage(int xLoc, double percentY, std::string text, oapi::Sketchpad* skp)
 {
 	skp->Text(xLoc, (int)(percentY * height), text.c_str(), text.size()); 
+}
+
+void MasterMFD::drawCenteredAtLinePercentage(double percentY, std::string text, oapi::Sketchpad* skp)
+{
+	int xCoord = (width - skp->GetTextWidth(text.c_str())) / 2;
+	drawAtLinePercentage(xCoord, percentY, text, skp);
+
 }
 
 // message parser

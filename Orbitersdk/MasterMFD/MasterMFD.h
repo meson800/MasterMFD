@@ -12,7 +12,7 @@ enum ButtonType
 
 enum NavType
 {
-	BACK = 0
+	UP = 0
 };
 
 struct ButtonData
@@ -37,11 +37,13 @@ private:
 	void drawMFDS(oapi::Sketchpad* skp);
 
 	void generateTreeLocation();
+	int calculatePages();
 
 	void drawTextAtNextButton(std::string text, ButtonData info, oapi::Sketchpad* skp);
 	void resetNextButton();
 	void drawTextNextToButton(int buttonNum, std::string text, oapi::Sketchpad* skp);
 	void drawAtLinePercentage(int xLoc, double percentY, std::string text, oapi::Sketchpad* skp);
+	void drawCenteredAtLinePercentage(double percentY, std::string text, oapi::Sketchpad* skp);
 
 	bool areAtTop();
 
@@ -52,4 +54,5 @@ private:
 	MFDContainer* currentContainer;
 	int mfdNumber;
 	int nextButton;
+	int currentPage, pages;
 };

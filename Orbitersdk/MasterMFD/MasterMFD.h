@@ -39,11 +39,11 @@ private:
 	void generateTreeLocation();
 	int calculatePages();
 
-	void drawTextAtNextButton(std::string text, ButtonData info, oapi::Sketchpad* skp);
+	void drawTextAtNextButton(const std::string& text, ButtonData info, oapi::Sketchpad* skp);
 	void resetNextButton();
-	void drawTextNextToButton(int buttonNum, std::string text, oapi::Sketchpad* skp);
-	void drawAtLinePercentage(int xLoc, double percentY, std::string text, oapi::Sketchpad* skp);
-	void drawCenteredAtLinePercentage(double percentY, std::string text, oapi::Sketchpad* skp);
+	void drawTextNextToButton(int buttonNum, const std::string& text, oapi::Sketchpad* skp);
+	void drawAtLinePercentage(int xLoc, double percentY, const std::string& text, oapi::Sketchpad* skp);
+	void drawCenteredAtLinePercentage(double percentY, const std::string& text, oapi::Sketchpad* skp);
 
 	bool areAtTop();
 

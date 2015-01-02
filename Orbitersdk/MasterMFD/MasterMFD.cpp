@@ -196,7 +196,7 @@ void MasterMFD::drawMFDS(oapi::Sketchpad* skp)
 	}
 }
 
-void MasterMFD::drawTextAtNextButton(std::string text, ButtonData info, oapi::Sketchpad* skp)
+void MasterMFD::drawTextAtNextButton(const std::string& text, ButtonData info, oapi::Sketchpad* skp)
 {
 	buttons.push_back(info);
 	if (nextButton < 12)
@@ -210,7 +210,7 @@ void MasterMFD::resetNextButton()
 	nextButton = 0;
 }
 
-void MasterMFD::drawTextNextToButton(int buttonNum, std::string text, oapi::Sketchpad* skp)
+void MasterMFD::drawTextNextToButton(int buttonNum, const std::string& text, oapi::Sketchpad* skp)
 {
 	double percentY = .143 * (buttonNum % 6) + .14;
 	//if buttonNum is less than 6 (on the left side), just draw normally
@@ -221,12 +221,12 @@ void MasterMFD::drawTextNextToButton(int buttonNum, std::string text, oapi::Sket
 		drawAtLinePercentage(width - skp->GetTextWidth(text.c_str()) - 3, percentY, text, skp);
 }
 
-void MasterMFD::drawAtLinePercentage(int xLoc, double percentY, std::string text, oapi::Sketchpad* skp)
+void MasterMFD::drawAtLinePercentage(int xLoc, double percentY, const std::string& text, oapi::Sketchpad* skp)
 {
 	skp->Text(xLoc, (int)(percentY * height), text.c_str(), text.size()); 
 }
 
-void MasterMFD::drawCenteredAtLinePercentage(double percentY, std::string text, oapi::Sketchpad* skp)
+void MasterMFD::drawCenteredAtLinePercentage(double percentY, const std::string& text, oapi::Sketchpad* skp)
 {
 	int xCoord = (width - skp->GetTextWidth(text.c_str())) / 2;
 	drawAtLinePercentage(xCoord, percentY, text, skp);

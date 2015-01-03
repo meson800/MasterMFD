@@ -61,9 +61,9 @@ bool MasterMFD::ConsumeButton(int bt, int event)
 {
 	if (!(event & PANEL_MOUSE_LBDOWN)) return false;
 
-	switch (buttons[bt].buttonType)
+	switch (buttons[bt].itemType)
 	{
-		case ButtonType::NAV:
+		case ItemType::NAV:
 		{
 			//switch the ID
 			switch (buttons[bt].id)
@@ -77,7 +77,7 @@ bool MasterMFD::ConsumeButton(int bt, int event)
 			}
 			break;
 		}
-		case ButtonType::CAT:
+		case ItemType::CAT:
 		{
 			//go into a subcategory
 			currentContainer = currentContainer->children[buttons[bt].id];
@@ -86,7 +86,7 @@ bool MasterMFD::ConsumeButton(int bt, int event)
 			return true;
 			break;
 		}
-	case ButtonType::MFD:
+	case ItemType::MFD:
 		{
 			//schedule a MFD switch at next frame
 			PersistantData::mfdMode = currentContainer->MFDS[buttons[bt].id].mfdID;
@@ -168,7 +168,7 @@ void MasterMFD::drawNavigation(oapi::Sketchpad* skp)
 
 	//if we aren't at the top, draw a "back" button to advance up a category
 	if (!areAtTop())
-		drawTextAtNextButton("Up a level", ButtonData(ButtonType::NAV, NavType::UP), skp);
+		drawTextAtNextButton("Up a level", ButtonData(ItemType::NAV, NavType::UP), skp);
 }
 
 void MasterMFD::drawCategories(oapi::Sketchpad* skp)
@@ -179,7 +179,7 @@ void MasterMFD::drawCategories(oapi::Sketchpad* skp)
 	//draw the current categories in green
 	for (unsigned int i = 0; i < currentContainer->children.size(); i++)
 	{
-		drawTextAtNextButton(currentContainer->children[i]->name, ButtonData(ButtonType::CAT, i), skp);
+		drawTextAtNextButton(currentContainer->children[i]->name, ButtonData(ItemType::CAT, i), skp);
 	}
 }
 
@@ -192,7 +192,7 @@ void MasterMFD::drawMFDS(oapi::Sketchpad* skp)
 	//draw the current categories in green
 	for (unsigned int i = 0; i < currentContainer->MFDS.size(); i++)
 	{
-		drawTextAtNextButton(currentContainer->MFDS[i].name, ButtonData(ButtonType::MFD,i), skp);
+		drawTextAtNextButton(currentContainer->MFDS[i].name, ButtonData(ItemType::MFD,i), skp);
 	}
 }
 
@@ -202,6 +202,12 @@ void MasterMFD::drawTextAtNextButton(const std::string& text, ButtonData info, o
 	if (nextButton < 12)
 		drawTextNextToButton(nextButton, text, skp);
 	nextButton++;
+}
+
+void MasterMFD::drawTextNextToButton(const std::string& text, ButtonData info, int buttonNum, oapi::Sketchpad* skp)
+{
+	buttons[buttonNum] = info;
+	drawTextNextToButton(buttonNum, text, skp);
 }
 
 void MasterMFD::resetNextButton()

@@ -30,6 +30,9 @@ lineIterator MFDContainer::fill(lineIterator currentLine, int whitespaceLevel)
 		if (currentLevel == whitespaceLevel && nextLevel <= whitespaceLevel)
 		{
 			MFDS.push_back(MFDData(currentLine->name));
+
+			//add to the item list
+			items.push_back(ItemData(ItemType::MFD, MFDS.size() - 1)); //size-1 to get the current index
 			++currentLine;
 		}
 
@@ -39,6 +42,10 @@ lineIterator MFDContainer::fill(lineIterator currentLine, int whitespaceLevel)
 			children.push_back(new MFDContainer);
 			children.back()->parent = this;
 			children.back()->name = currentLine->name;
+
+			//add to the item list
+			items.push_back(ItemData(ItemType::CAT, children.size() - 1)); //size-1 to get current index
+
 			currentLine = children.back()->fill(currentLine + 1, nextLevel);
 		}
 		//return if we got a bad current line
@@ -53,44 +60,53 @@ lineIterator MFDContainer::fill(lineIterator currentLine, int whitespaceLevel)
 //returns true if this container is empty
 bool MFDContainer::checkContainer()
 {
-	//first, recurse into children, removing them if they are empty
-	std::vector<MFDContainer*>::iterator it = children.begin();
-	while (it != children.end())
+
+	std::vector<ItemData>::iterator it = items.begin();
+	while (it != items.end())
 	{
-		
-		if (!(*it)->checkContainer())
+		switch (it->itemType)
 		{
-			//it's empty, delete it
-			delete (*it);
-			//remove element and cleanup
-			it = children.erase(it);
+			case ItemType::CAT:
+			{
+				//check the category, remove if necessary
+				if (!(children[it->index]->checkContainer()))
+				{
+					//empty container, remove this reference to it after deleting it
+					//but NOT removing it from children, as that would mess up the indexes
+					delete children[it->index];
+					it = items.erase(it);
+				}
+				else
+				{
+					it++;
+				}
+				break;
+			}
+			case ItemType::MFD:
+			{
+				int mfdID = oapiGetMFDModeSpecEx((char*)(MFDS[it->index].name.c_str()));
+				//check if we have a legit MFD
+				if (mfdID != MFD_NONE)
+				{
+					MFDS[it->index].mfdID = mfdID;
+					it++;
+				}
+				//otherwise, delete it from the items list
+				else
+				{
+					//log it
+					oapiWriteLog((char*)(std::string("[MasterMFD] Couldn't find MFD named-" + MFDS[it->index].name).c_str()));
+
+					//delete it
+					it = items.erase(it);
+				}
+				break;
+			}
+			default:
+				break;
+
 		}
-		else
-			it++;
 	}
-
-	//now check our MFD's, and fill them if they exist
-	std::vector<MFDData>::iterator MFDit = MFDS.begin();
-	while (MFDit != MFDS.end())
-	{
-		int mfdID = oapiGetMFDModeSpecEx((char*)(MFDit->name.c_str()));
-		//check if we have a legit MFD
-		if (mfdID != MFD_NONE)
-		{
-			MFDit->mfdID = mfdID;
-			MFDit++;
-		}
-		//otherwise, delete it!
-		else
-		{
-			//log it
-			oapiWriteLog((char*)(std::string("[MasterMFD] Couldn't find MFD named-" + MFDit->name).c_str()));
-
-			//delete it
-			MFDit = MFDS.erase(MFDit);
-		}
-	}
-
 	//now, return true if we have either an MFD or a subcategory
 	if (children.size() > 0 || MFDS.size() > 0)
 		return true;

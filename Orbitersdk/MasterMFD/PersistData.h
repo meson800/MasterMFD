@@ -21,6 +21,18 @@ struct MFDData
 	std::string name;
 };
 
+enum ItemType
+{
+	CAT, MFD, NAV
+};
+
+struct ItemData
+{
+	ItemData(ItemType _itemType, int _id) : itemType(_itemType), index(_id) {}
+	ItemType itemType;
+	int index;
+};
+
 struct MFDContainer
 {
 	lineIterator fill(lineIterator currentLine, int whitespaceLevel);
@@ -30,6 +42,7 @@ struct MFDContainer
 	MFDContainer * parent;
 	std::vector<MFDContainer*> children;
 	std::vector<MFDData> MFDS;
+	std::vector<ItemData> items;
 };
 
 class PersistantData

@@ -46,7 +46,7 @@ DLLCLBK void opcPreStep(double simt, double simdt, double mjd)
 }
 
 MasterMFD::MasterMFD(int _mfdNumber, DWORD w, DWORD h, VESSEL *vessel)
-: MFD2(w, h, vessel), width(w), height(h), mfdNumber(_mfdNumber)
+: MFD2(w, h, vessel), width(w), height(h), mfdNumber(_mfdNumber), pages(0), currentPage(0)
 {
 	//start with default container
 	currentContainer = &(PersistantData::topContainer);
@@ -72,6 +72,14 @@ bool MasterMFD::ConsumeButton(int bt, int event)
 				//it's the back button, advance up the tree
 				currentContainer = currentContainer->parent;
 				generateTreeLocation();
+				return true;
+				break;
+			case NavType::NEXT_PAGE:
+				currentPage++;
+				return true;
+				break;
+			case NavType::PREVIOUS_PAGE:
+				currentPage--;
 				return true;
 				break;
 			}
@@ -110,8 +118,6 @@ bool MasterMFD::Update(oapi::Sketchpad* skp)
 	}
 	resetNextButton();
 	drawNavigation(skp);
-	drawCategories(skp);
-	drawMFDS(skp);
 
 	return true;
 }
@@ -161,50 +167,75 @@ void MasterMFD::drawNavigation(oapi::Sketchpad* skp)
 
 	drawCenteredAtLinePercentage( .05, treeLocation.c_str(), skp);
 
-	//draw page identifier
-	std::string pageString = "Page " + std::to_string(currentPage) + " of " + std::to_string(pages);
-	drawCenteredAtLinePercentage(.95, pageString.c_str(), skp);
-
+	int itemsRemaining = 12;
 
 	//if we aren't at the top, draw a "back" button to advance up a category
 	if (!areAtTop())
+	{
 		drawTextAtNextButton("Up a level", ButtonData(ItemType::NAV, NavType::UP), skp);
-}
-
-void MasterMFD::drawCategories(oapi::Sketchpad* skp)
-{
-	skp->SetFont(GetDefaultFont(0));
-	skp->SetTextColor(GetDefaultColour(0));
-
-	//draw the current categories in green
-	for (unsigned int i = 0; i < currentContainer->children.size(); i++)
-	{
-		drawTextAtNextButton(currentContainer->children[i]->name, ButtonData(ItemType::CAT, i), skp);
+		itemsRemaining--;
 	}
+
+	//draw page identifier
+	if (pages > 1)
+	{
+		std::string pageString = "Page " + std::to_string(currentPage) + " of " + std::to_string(pages);
+		drawCenteredAtLinePercentage(.95, pageString.c_str(), skp);
+		//now draw navigation
+		if (currentPage > 1)
+		{
+			drawTextAtNextButton("Previous page", ButtonData(ItemType::NAV, NavType::PREVIOUS_PAGE), skp);
+			itemsRemaining--;
+		}
+		if (currentPage < pages)
+		{
+			drawItemNextToButton("Next page", ButtonData(ItemType::NAV, NavType::NEXT_PAGE), 11, skp);
+			itemsRemaining--;
+		}
+
+	}
+	drawItems(skp, itemsRemaining);
+
+
+
 }
 
-void MasterMFD::drawMFDS(oapi::Sketchpad* skp)
+void MasterMFD::drawItems(oapi::Sketchpad* skp, int numItems)
 {
+	int startItem = ((currentPage - 1) * numItems) ;
+	int maxItem = startItem + numItems;
+	maxItem = (currentContainer->items.size() < maxItem) ? currentContainer->items.size() : maxItem;
 
-	skp->SetFont(GetDefaultFont(0));
-	skp->SetTextColor(GetDefaultColour(1));
-
-	//draw the current categories in green
-	for (unsigned int i = 0; i < currentContainer->MFDS.size(); i++)
+	for (int i = startItem; i < maxItem; i++)
 	{
-		drawTextAtNextButton(currentContainer->MFDS[i].name, ButtonData(ItemType::MFD,i), skp);
+		if (currentContainer->items[i].itemType == ItemType::CAT)
+		{
+			skp->SetFont(GetDefaultFont(0));
+			skp->SetTextColor(GetDefaultColour(0));
+
+			drawTextAtNextButton(currentContainer->children[currentContainer->items[i].index]->name, 
+				ButtonData(ItemType::CAT,currentContainer->items[i].index), skp);
+		}
+		else
+		{
+			skp->SetFont(GetDefaultFont(0));
+			skp->SetTextColor(GetDefaultColour(1));
+
+			drawTextAtNextButton(currentContainer->MFDS[currentContainer->items[i].index].name,
+				ButtonData(ItemType::MFD, currentContainer->items[i].index), skp);
+		}
 	}
 }
 
 void MasterMFD::drawTextAtNextButton(const std::string& text, ButtonData info, oapi::Sketchpad* skp)
 {
-	buttons.push_back(info);
+	buttons[nextButton] = info;
 	if (nextButton < 12)
 		drawTextNextToButton(nextButton, text, skp);
 	nextButton++;
 }
 
-void MasterMFD::drawTextNextToButton(const std::string& text, ButtonData info, int buttonNum, oapi::Sketchpad* skp)
+void MasterMFD::drawItemNextToButton(const std::string& text, ButtonData info, int buttonNum, oapi::Sketchpad* skp)
 {
 	buttons[buttonNum] = info;
 	drawTextNextToButton(buttonNum, text, skp);
@@ -213,6 +244,7 @@ void MasterMFD::drawTextNextToButton(const std::string& text, ButtonData info, i
 void MasterMFD::resetNextButton()
 {
 	buttons.clear();
+	buttons.resize(12);
 	nextButton = 0;
 }
 

@@ -6,12 +6,15 @@
 
 enum NavType
 {
-	UP = 0
+	UP = 0,
+	PREVIOUS_PAGE,
+	NEXT_PAGE
 };
 
 struct ButtonData
 {
 	ButtonData(ItemType _type, int _id) : itemType(_type), id(_id) {}
+	ButtonData() : itemType(ItemType::NAV), id(0) {}
 	ItemType itemType;
 	int id;
 };
@@ -27,14 +30,13 @@ public:
 	static int MsgProc(UINT msg, UINT mfd, WPARAM wparam, LPARAM lparam);
 private:
 	void drawNavigation(oapi::Sketchpad* skp);
-	void drawCategories(oapi::Sketchpad* skp);
-	void drawMFDS(oapi::Sketchpad* skp);
+	void drawItems(oapi::Sketchpad* skp, int numItems);
 
 	void generateTreeLocation();
 	int calculatePages();
 
 	void drawTextAtNextButton(const std::string& text, ButtonData info, oapi::Sketchpad* skp);
-	void drawTextNextToButton(const std::string& text, ButtonData info, int buttonNum, oapi::Sketchpad* skp);
+	void drawItemNextToButton(const std::string& text, ButtonData info, int buttonNum, oapi::Sketchpad* skp);
 
 	void resetNextButton();
 	void drawTextNextToButton(int buttonNum, const std::string& text, oapi::Sketchpad* skp);

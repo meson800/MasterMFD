@@ -80,10 +80,14 @@
     <ClInclude Include="globals.h" />
     <ClInclude Include="MasterMFD.h" />
     <ClInclude Include="PersistData.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MasterMFD.cpp" />
     <ClCompile Include="PersistData.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MasterMFD.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

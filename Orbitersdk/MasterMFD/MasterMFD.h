@@ -4,21 +4,18 @@
 #include <vector>
 #include "PersistData.h"
 
-
-enum ButtonType
-{
-	NAV,CAT,MFD
-};
-
 enum NavType
 {
-	BACK = 0
+	UP = 0,
+	PREVIOUS_PAGE,
+	NEXT_PAGE
 };
 
 struct ButtonData
 {
-	ButtonData(ButtonType _type, int _id) : buttonType(_type), id(_id) {}
-	ButtonType buttonType;
+	ButtonData(ItemType _type, int _id) : itemType(_type), id(_id) {}
+	ButtonData() : itemType(ItemType::NAV), id(0) {}
+	ItemType itemType;
 	int id;
 };
 
@@ -33,15 +30,18 @@ public:
 	static int MsgProc(UINT msg, UINT mfd, WPARAM wparam, LPARAM lparam);
 private:
 	void drawNavigation(oapi::Sketchpad* skp);
-	void drawCategories(oapi::Sketchpad* skp);
-	void drawMFDS(oapi::Sketchpad* skp);
+	void drawItems(oapi::Sketchpad* skp, int numItems);
 
 	void generateTreeLocation();
+	int calculatePages();
 
-	void drawTextAtNextButton(std::string text, ButtonData info, oapi::Sketchpad* skp);
+	void drawTextAtNextButton(const std::string& text, ButtonData info, oapi::Sketchpad* skp);
+	void drawItemNextToButton(const std::string& text, ButtonData info, int buttonNum, oapi::Sketchpad* skp);
+
 	void resetNextButton();
-	void drawTextNextToButton(int buttonNum, std::string text, oapi::Sketchpad* skp);
-	void drawAtLinePercentage(int xLoc, double percentY, std::string text, oapi::Sketchpad* skp);
+	void drawTextNextToButton(int buttonNum, const std::string& text, oapi::Sketchpad* skp);
+	void drawAtLinePercentage(int xLoc, double percentY, const std::string& text, oapi::Sketchpad* skp);
+	void drawCenteredAtLinePercentage(double percentY, const std::string& text, oapi::Sketchpad* skp);
 
 	bool areAtTop();
 
@@ -52,4 +52,5 @@ private:
 	MFDContainer* currentContainer;
 	int mfdNumber;
 	int nextButton;
+	int currentPage, pages;
 };

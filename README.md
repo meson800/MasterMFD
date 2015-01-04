@@ -3,11 +3,15 @@ MasterMFD
 
 MFD that allows the user to sort other MFD's into categories, for easier access.
 
+Visual Studio Redistributable
+-----------------------------
+To use, you must install the C++ 2013 redistributable available [here](http://www.microsoft.com/en-us/download/details.aspx?id=40784).
+
 Use
 ----
 Edit the file OrbiterRoot/Config/MasterMFD/mainTree.txt
 Setup the file in a tree structure, with whitespace seperating levels.
-It doesn't matter how much whitespace you use, just htat it is consistant.
+It doesn't matter how much whitespace you use, just that it is consistant.
 
 Here's a simple example tree:
 ```

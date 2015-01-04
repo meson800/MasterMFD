@@ -10,6 +10,7 @@
 #define IDC_IAM                         1001
 #define IDS_TYPE                        1001
 #define IDC_REMEMBER                    1002
+#define VERSION_NUMBER                  1002
 #define IDC_DISPLAY                     1003
 #define IDC_BUTTON1                     1004
 #define IDC_BUTTON2                     1005

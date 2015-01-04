@@ -54,6 +54,7 @@ STRINGTABLE
 BEGIN
     IDS_INFO                "Master MFD:\r\n\r\n Allows MFDs to be sorted into categories by the user for easy access."
     IDS_TYPE                "MFD modes"
+    VERSION_NUMBER          "1.0"
 END
 
 #endif    // English (United Kingdom) resources

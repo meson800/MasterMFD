@@ -1,0 +1,21 @@
+Launch
+	LaunchMFD
+	Surface
+	Ascent profile
+	Map
+	Orbit
+On Orbit
+	Orbit
+	Align Planes
+	Sync Orbit
+	Docking
+	GalacticMap3D
+Transfers
+	Transfer
+	TransX
+	Interplanetary
+Reentry
+	Atmospheric
+		AeroBrakeMFD
+		Glideslope 2
+	BaseSync

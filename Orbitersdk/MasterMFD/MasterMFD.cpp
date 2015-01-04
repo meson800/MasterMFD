@@ -151,7 +151,7 @@ int MasterMFD::calculatePages()
 	if (numItems <= 11)
 		return 1;
 	//if we have more, then we can only fit 9 items per page (we need two buttons for previous/next page)
-	return ceil((float)numItems / 9.0);
+	return (int)ceil((float)numItems / 9.0);
 }
 
 void MasterMFD::drawNavigation(oapi::Sketchpad* skp)
@@ -203,10 +203,10 @@ void MasterMFD::drawNavigation(oapi::Sketchpad* skp)
 void MasterMFD::drawItems(oapi::Sketchpad* skp, int numItems)
 {
 	int startItem = ((currentPage - 1) * numItems) ;
-	int maxItem = startItem + numItems;
+	unsigned int maxItem = startItem + numItems;
 	maxItem = (currentContainer->items.size() < maxItem) ? currentContainer->items.size() : maxItem;
 
-	for (int i = startItem; i < maxItem; i++)
+	for (unsigned int i = startItem; i < maxItem; i++)
 	{
 		if (currentContainer->items[i].itemType == ItemType::CAT)
 		{

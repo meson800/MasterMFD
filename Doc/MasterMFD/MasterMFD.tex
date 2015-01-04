@@ -1,0 +1,82 @@
+\documentclass[12pt]{article}
+\usepackage{epigraph}
+\usepackage{listings}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{placeins}
+\usepackage{hyperref}
+
+\title{MasterMFD --- Version 1.0}
+\author{meson800 (Christopher Johnstone)}
+
+\begin{document}
+
+\maketitle
+
+\epigraph{\textit {One MFD to rule them all, One MFD to find them; One MFD to bring them all and in the darkness bind them}}{The Probe}
+
+\newpage
+
+\tableofcontents
+
+\section{Summary}
+Do you ever think that paging through page upon page of ill-sorted MFDs is a little tiring? Well so did I.
+
+MasterMFD allows one to setup a simple text based file which allows the users to create categories of MFDS, so MFDS can be accessed more logically.
+
+\section{Configuration}
+MasterMFD works off of a "tree" file, located at \\ \texttt{ORBITER\_ROOT/Config/MasterMFD/mainTree.txt}
+
+To set it up, you just list either a category name or MFD name, separated by "level" with whitespace. The whitespace reader will figure it out as long as you are consistent. You can use one space per level, or two spaces, or fifty spaces, or tabs, etc.
+As a tab will only count as one whitespace character,{\color{red}{ mixing tabs and spaces in the tree file is not recommended.}}
+
+To specify a MFD in a tree, just type its name as it appears in the Orbiter MFD select menu.  MFDs that aren't active will be automatically removed from the tree.
+
+Categories can be nested.
+
+\section{FAQ}
+\begin{itemize}
+\item I'm getting a MSVCP120.dll not present error!
+\begin{itemize} \item Install the Microsoft Visual C++ 2013 redistributable available at \url{http://www.microsoft.com/en-us/download/details.aspx?id=40784}\end{itemize}
+\item Orbiter hangs on startup!
+\begin{itemize} \item Check to make sure your tree file isn't mixing tabs and spaces---mixing the two can confuse the whitespace parser.\end{itemize}
+\item Orbiter lists MasterMFD far down in the MFD select list!
+\begin{itemize} \item You can manually move MasterMFD up in the Active Plugins section of \texttt{Orbiter.cfg} or \texttt{Orbiter\_NG.cfg} to make it more convenient to activate.\end{itemize}
+\end{itemize}
+
+\section{Color Coding}
+\begin{itemize}
+\item     White text---navigation controls such as up a level, previous page, next page.
+\item    Green text---subcategories, select it to view that subcategory.
+\item    Yellow text---MFDs,select these to immediately switch to that MFD.
+\end{itemize}
+
+\newpage
+
+\section{Example Tree}
+\begin{lstlisting}[frame=single]
+Launch
+	LaunchMFD
+	Surface
+	Ascent profile
+	Map
+	Orbit
+On Orbit
+	Orbit
+	Align Planes
+	Sync Orbit
+	Docking
+	GalacticMap3D
+Transfers
+	Transfer
+	TransX
+	Interplanetary
+Reentry
+	Atmospheric
+		AeroBrakeMFD
+		Glideslope 2
+	BaseSync
+\end{lstlisting}
+
+
+
+\end{document}
